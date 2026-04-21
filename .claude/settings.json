@@ -1,0 +1,42 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/inject-active-client.sh"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "prompt=$(jq -r '.prompt // \"\"' 2>/dev/null); session_id=$(jq -r '.session_id // \"default\"' 2>/dev/null); if echo \"$prompt\" | grep -qE '^\\s*/pm\\b'; then mkdir -p .claude/sessions; echo \"$prompt\" | sed 's|^\\s*/pm\\s*||' | cut -c1-80 > \".claude/sessions/${session_id}.pm\"; fi; exit 0"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(mkdir:*)",
+      "Read(**)",
+      "Write(clients/**)",
+      "Write(patterns/**)",
+      "Write(.claude/active-client)",
+      "Write(.claude/active-pm)",
+      "Write(.claude/sessions/*)",
+      "Edit(clients/**)",
+      "Edit(patterns/**)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Write(.env)"
+    ]
+  }
+}

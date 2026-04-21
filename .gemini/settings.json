@@ -1,0 +1,18 @@
+{
+  "tools": {
+    "allowed": [
+      "read_file",
+      "glob",
+      "grep_search",
+      "run_shell_command(npm)",
+      "run_shell_command(npx)",
+      "run_shell_command(git)"
+    ]
+  },
+  "general": {
+    "defaultApprovalMode": "auto_edit"
+  },
+  "security": {
+    "enablePermanentToolApproval": true
+  }
+}
