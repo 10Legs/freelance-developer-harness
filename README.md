@@ -161,7 +161,6 @@ freelance-developer-harness/
 ├── docs/                  # SOPs, workflows, onboarding
 ├── scripts/
 │   ├── setup.sh                 # Interactive first-time configuration
-│   └── sync-to-public.sh        # Sync generic improvements from a private fork to this repo
 ├── CLAUDE.md              # Harness operating model — loaded automatically by Claude Code
 ├── AGENTS.md              # Team roster, authorities, gates, governance matrix
 └── README.md
@@ -264,38 +263,6 @@ clients/<client>/projects/<project>/sprints/
 - The sprint file contains frontmatter (status, dates, goal), a milestone table, the backlog with PR links, risks, definition of done, and an embedded retrospective section.
 
 This is the only source of sprint truth. Specs, ADRs, and PM summaries continue to live in `specs/`.
-
----
-
-## Syncing with `molt-and-deploy-harness`
-
-This public repo is downstream of an internal private harness called `molt-and-deploy-harness`. Generic improvements (new agents, commands, patterns) are pushed downstream with `scripts/sync-to-public.sh`, which scrubs PII and refuses to copy client-specific material.
-
-```bash
-# Dry run first — shows what would change, makes no edits
-scripts/sync-to-public.sh \
-  --source /path/to/molt-and-deploy-harness \
-  --target /path/to/freelance-developer-harness \
-  --dry-run
-
-# Real sync — creates branch sync/from-molt-<date> in TARGET and stages a PR
-scripts/sync-to-public.sh \
-  --source /path/to/molt-and-deploy-harness \
-  --target /path/to/freelance-developer-harness
-```
-
-Hard rules enforced by the script:
-
-- `SOURCE` is never modified
-- `TARGET` writes happen on a fresh branch (`sync/from-molt-<date>`)
-- Blocklist beats allowlist — client-specific paths (`clients/<real-client>/`, session files, secrets) are never copied even if matched by an allowlist rule
-- A `sed` scrubber replaces hardcoded paths with `$SOURCE_ROOT_BASE/` placeholders
-- The `Active Clients` table in `CLAUDE.md` is reset to the single template row
-- A PII guard runs in CI on every PR — if PII slips through, the PR fails
-
-Exit codes: `0` success · `1` usage error · `2` PII detected post-scrub · `3` source/target invalid.
-
-You can run this script independently; you do not need access to the private repo to use the public harness.
 
 ---
 
