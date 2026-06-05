@@ -38,6 +38,17 @@ The **Product Manager** leads the organization. All work flows through the PM, w
 - **Blockchain Engineer** — EVM chains (Ethereum, Base, Optimism, Arbitrum), Solidity, Foundry, Wagmi/viem, The Graph; Bitcoin (Script, Taproot, Ordinals, Lightning, BDK, PSBT)
 - **Security Reviewer** — Security audits, compliance, threat modeling
 
+### Hardware Council *(directed by PM)*
+- **Hardware PM** — NPI process, BOM management, factory milestones, EVT/DVT/PVT gate ownership
+- **Industrial Designer** — Form factor, ergonomics, physical UX, CMF specification, packaging
+- **Electrical Engineer** — PCB design, schematics, power systems, signal integrity, component selection
+- **Firmware Engineer** — Microcontrollers, RTOS, bare-metal C/Rust, HAL abstraction, OTA
+- **Mechanical Engineer** — Enclosures, tolerances, thermal management, DFM review
+- **Hardware Security Engineer** — Secure boot, hardware root of trust, tamper resistance, cryptographic hardware, provisioning
+- **Manufacturing Engineer** — DFM/DFA sign-off, CM management, EVT/DVT/PVT build execution, yield optimization
+- **Supply Chain Specialist** — BOM sourcing, component lead times, risk assessment, tariff analysis, EOL management
+- **Certification Specialist** — FCC, CE, UL, RoHS, REACH, WEEE compliance and market submission
+
 ### Delivery Council *(directed by PM)*
 - **Technical Writer** — Documentation, client deliverables, knowledge base
 - **QA Specialist** — Quality gates, acceptance criteria, test automation
@@ -58,6 +69,39 @@ Client need
 ```
 
 The PM is responsible for keeping this pipeline moving. If a gate is blocked, the PM surfaces the blocker and routes around it or escalates.
+
+### Project Classification (Software / Hardware / Hybrid)
+
+On intake, the PM classifies the project to select the correct pipeline:
+
+- **Software/Web/Mobile** — keywords: API, UI, app, web, database, frontend, backend, mobile
+- **Hardware/Physical Device** — keywords: PCB, firmware, enclosure, embedded, sensor, microcontroller, manufacturing, NPI, physical device, IoT hardware
+- **Hybrid** — hardware device with companion software (app, cloud backend); both pipelines run in parallel with PM arbitrating cross-track conflicts
+
+### Hardware NPI Pipeline
+
+For hardware and hybrid projects, the PM additionally runs the New Product Introduction pipeline:
+
+```
+Concept (ID + Innovation Lead)
+  → Architecture (EE + ME + SA for hybrid)  [gate: arch sign-off + DFM feasibility + reg strategy]
+  → EVT — Engineering Validation Test       [gate: no-ship defects resolved]
+  → DVT — Design Validation Test            [gate: BOM locked, pre-compliance EMC passed]
+  → Certification (FCC / CE / UL)           [gate: clearance received]
+  → PVT — Production Validation Test        [gate: yield target met]
+  → Delivery (manual + compliance docs)
+  → Ship
+```
+
+### Cross-Council Coordination (Hardware + Software)
+
+For hybrid products, these contracts apply:
+
+- **Firmware Engineer <-> Backend Developer** — API contracts and data serialization format agreed before EVT; post-EVT changes require formal change request
+- **Hardware Security Engineer <-> Security Reviewer** — Combined HW+SW threat model required; neither signs off in isolation
+- **Industrial Designer <-> UI Designer** — Physical and digital product share design language; coordinate before DVT
+- **Hardware PM <-> PM (org)** — Hardware PM owns NPI timeline; org PM arbitrates when HW and SW track timelines diverge
+- **Supply Chain Specialist <-> Backend Developer** — Cloud provisioning flow aligned with CM key-injection architecture
 
 ## Workflow Gates
 
