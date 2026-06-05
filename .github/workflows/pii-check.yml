@@ -1,0 +1,46 @@
+name: PII Check
+
+# Fail the build if any committed file contains a personal absolute path,
+# a personal git identity, or a reference to the private client workspace.
+# Runs on every PR and on direct pushes to main.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  pii-grep:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Scan for PII (absolute user paths, client refs, personal identity)
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Patterns considered PII for this public repo.
+          # Exclude the workflow itself and the sync script — both legitimately
+          # mention the patterns (the workflow defines them; the sync script scrubs them).
+          PATTERN='/Users/|clients/self|rdemeritt'
+          INCLUDES=(--include='*.md' --include='*.sh' --include='*.json' --include='*.yaml' --include='*.yml')
+          EXCLUDES=(--exclude-dir='.git' --exclude-dir='node_modules' --exclude='pii-check.yml' --exclude='sync-to-public.sh')
+
+          echo "Scanning for pattern: $PATTERN"
+          if hits=$(grep -rnE "$PATTERN" . "${INCLUDES[@]}" "${EXCLUDES[@]}"); then
+            echo "::error::PII detected in repository — see matches below"
+            echo "$hits" | while IFS= read -r line; do
+              file="${line%%:*}"
+              rest="${line#*:}"
+              lineno="${rest%%:*}"
+              echo "::error file=$file,line=$lineno::PII match: $line"
+            done
+            echo ""
+            echo "=== All matches ==="
+            echo "$hits"
+            exit 1
+          fi
+
+          echo "No PII detected. Clean."
