@@ -2,514 +2,313 @@
 
 > Where vision meets execution.
 
-A structured agency operating system for Claude Code. Manages multiple client projects through a three-council model with enforced quality gates, session-scoped context locking, and an automated PM-driven workflow.
+[![GitHub stars](https://img.shields.io/github/stars/10Legs/freelance-developer-harness?style=social)](https://github.com/10Legs/freelance-developer-harness/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Built for Claude Code](https://img.shields.io/badge/built%20for-Claude%20Code-7C3AED)](https://claude.com/claude-code)
+
+A structured agency operating system for [Claude Code](https://claude.com/claude-code). Turns one assistant into a full team — Product Manager, three councils of specialists, and enforced quality gates — that runs your client work end-to-end.
 
 ---
 
-## What This Is
+## What It Is
 
-This harness turns Claude Code into a full agency team. Instead of one assistant doing everything ad-hoc, work flows through specialized roles (architects, designers, developers, QA, security) with hard gates that prevent skipping steps. The Product Manager owns the pipeline and delegates to the right agent at each stage.
+The harness is the missing org chart for AI coding agents. Out of the box, Claude Code is a brilliant generalist. Useful, but unprincipled — it will happily skip architecture review to ship faster, or run security checks last instead of first. That is not how a real agency works.
 
-It is not a code framework. It lives alongside your projects — specs, deliverables, and docs live here; source code lives in separate per-project repos.
+This harness installs the missing structure. A **Product Manager** owns the roadmap and routes every request through the right specialists. Three **councils** — Creative, Technical, Hardware, and Delivery — each have defined responsibilities and gates. Work flows through an automated pipeline from intake through delivery, and **non-negotiable stop-the-line gates** prevent rushing past steps that matter.
+
+It is for solo developers running multiple client engagements, small studios that want repeatable process without hiring a PMO, and anyone building hardware-plus-software products who needs the NPI discipline of a real product company. It is not a code framework — there is no library to import. It is a set of markdown files (agents, commands, hooks, templates) that Claude Code loads automatically, plus per-client workspaces that keep every engagement cleanly isolated.
+
+The core insight: Claude Code already supports subagents, slash commands, and event hooks. Compose them with intention and you get a full agency team that ships predictable, gated, documented work.
 
 ---
 
-## How the Pieces Fit Together
+## How It Works
+
+The Product Manager runs the pipeline. Every client need is broken into epics, routed to the right council, and held at gates until each council signs off.
+
+```mermaid
+flowchart LR
+    A[Client Need] --> B[Account Lead<br/>Brief + Scope]
+    B --> C[Product Manager<br/>Epic Breakdown]
+    C --> D[Creative Council<br/>Research + Design]
+    C --> E[Technical Council<br/>Architecture + Build]
+    C --> H[Hardware Council<br/>NPI / EVT / DVT / PVT]
+    D --> F[Delivery Council<br/>QA + Security + Docs]
+    E --> F
+    H --> F
+    F --> G[Ship]
+
+    style B fill:#FEF3C7,stroke:#D97706,color:#000
+    style C fill:#DBEAFE,stroke:#2563EB,color:#000
+    style D fill:#FCE7F3,stroke:#DB2777,color:#000
+    style E fill:#D1FAE5,stroke:#059669,color:#000
+    style H fill:#E0E7FF,stroke:#4F46E5,color:#000
+    style F fill:#FED7AA,stroke:#EA580C,color:#000
+    style G fill:#A7F3D0,stroke:#047857,color:#000
+```
+
+**Three councils, one PM.** The PM never implements — it directs. Specialists do the work. Gates block the pipeline until quality criteria are met.
+
+**Session-scoped client locking.** `/use-client <slug> <project>` locks a Claude Code session to one workspace. Every prompt thereafter auto-scopes to the right client, the right project, the right source root. Multiple sessions can target different clients with zero cross-contamination.
+
+**Hooks inject context automatically.** On every prompt, hooks read your session lock and inject the active client, project, and source-root paths into the agent's context. You set the lock once per session and it follows every subsequent message.
+
+---
+
+## Team Roster
+
+Twenty-five agents across four councils, all directed by the Product Manager.
+
+```mermaid
+flowchart TB
+    PM[Product Manager<br/><i>Orchestrator</i>]
+    AL[Account Lead<br/><i>Client Interface</i>]
+
+    PM --> CC[Creative Council]
+    PM --> TC[Technical Council]
+    PM --> HC[Hardware Council]
+    PM --> DC[Delivery Council]
+
+    CC --> CD[Creative Director]
+    CC --> IL[Innovation Lead]
+    CC --> UX[UX Researcher]
+    CC --> UI[UI Designer]
+
+    TC --> SA[Solution Architect]
+    TC --> FE[Frontend Dev]
+    TC --> BE[Backend Dev]
+    TC --> APE[Apple Platform Eng]
+    TC --> LLM[LLM Engineer]
+    TC --> BC[Blockchain Eng]
+    TC --> SR[Security Reviewer]
+
+    HC --> HPM[Hardware PM]
+    HC --> ID[Industrial Designer]
+    HC --> EE[Electrical Eng]
+    HC --> ME[Mechanical Eng]
+    HC --> FW[Firmware Eng]
+    HC --> HSE[Hardware Security]
+    HC --> MfE[Manufacturing Eng]
+    HC --> SCS[Supply Chain]
+    HC --> CS[Certification]
+
+    DC --> TW[Technical Writer]
+    DC --> QA[QA Specialist]
+    DC --> GVS[GitHub & VC Specialist]
+
+    style PM fill:#DBEAFE,stroke:#2563EB,color:#000
+    style AL fill:#FEF3C7,stroke:#D97706,color:#000
+    style CC fill:#FCE7F3,stroke:#DB2777,color:#000
+    style TC fill:#D1FAE5,stroke:#059669,color:#000
+    style HC fill:#E0E7FF,stroke:#4F46E5,color:#000
+    style DC fill:#FED7AA,stroke:#EA580C,color:#000
+```
+
+| Role | Council | Responsibility |
+|------|---------|---------------|
+| Product Manager | *Leadership* | Owns roadmap; routes epics to councils; drives pipeline |
+| Account Lead | *Leadership* | Client interface; signs briefs; manages stakeholder comms |
+| Creative Director | Creative | Vision, brand, design system oversight |
+| Innovation Lead | Creative | Ideation, breakthrough thinking, design sprints |
+| UX Researcher | Creative | User insights, personas, journey maps, usability testing |
+| UI Designer | Creative | Visual design, interaction design, prototyping |
+| Solution Architect | Technical | System design, ADRs, technical governance gate |
+| Frontend Developer | Technical | UI implementation, component architecture |
+| Backend Developer | Technical | APIs, services, data architecture |
+| Apple Platform Engineer | Technical | macOS / iOS / watchOS / tvOS; Swift, SwiftUI, AppKit, notarization |
+| LLM Engineer | Technical | Inference, prompts, providers, RAG, eval |
+| Blockchain Engineer | Technical | EVM chains, Solidity, Foundry; Bitcoin, Lightning, BDK |
+| Security Reviewer | Technical | Threat modeling, audits, compliance sign-off |
+| Hardware PM | Hardware | NPI ownership; BOM; EVT / DVT / PVT gates |
+| Industrial Designer | Hardware | Form factor, ergonomics, CMF, packaging |
+| Electrical Engineer | Hardware | PCB design, schematics, power, signal integrity |
+| Mechanical Engineer | Hardware | Enclosures, tolerances, thermal, DFM review |
+| Firmware Engineer | Hardware | MCUs, RTOS, bare-metal C/Rust, OTA |
+| Hardware Security Engineer | Hardware | Secure boot, root of trust, tamper resistance, provisioning |
+| Manufacturing Engineer | Hardware | DFM/DFA sign-off, CM management, yield optimization |
+| Supply Chain Specialist | Hardware | BOM sourcing, lead times, EOL, tariffs |
+| Certification Specialist | Hardware | FCC, CE, UL, RoHS, REACH, WEEE |
+| Technical Writer | Delivery | Documentation, client deliverables, knowledge base |
+| QA Specialist | Delivery | Quality gates, acceptance criteria, test automation |
+| GitHub & VC Specialist | Delivery | Branch hygiene, PR review, release readiness |
+
+---
+
+## Directory Structure
 
 ```
-freelance-developer-harness/      ← this repo (docs, specs, harness config)
-│
-├── .claude/                      ← Claude Code integration
-│   ├── agents/                   ← 16 role definitions (PM, Architect, QA, etc.)
-│   ├── commands/                 ← slash commands (/pm, /intake, /kickoff, etc.)
-│   ├── hooks/                    ← auto-inject client context on every prompt
-│   └── sessions/                 ← per-session client locks (isolated)
-│
-├── clients/                      ← one folder per client
-│   ├── _template/                ← blueprint for new clients
-│   ├── example-client/           ← example of a populated workspace
-│   └── your-client/              ← created by /onboard-client
+freelance-developer-harness/
+├── .claude/
+│   ├── agents/            # 25 role definitions — each agent is a markdown persona
+│   ├── commands/          # Slash commands (/pm, /intake, /sprint-plan, /retro, /mode, …)
+│   ├── hooks/             # Auto-inject session context on every prompt
+│   ├── sessions/          # Per-session client locks (one file per session)
+│   └── settings.json      # Hook wiring + tool permissions
+├── clients/
+│   ├── _template/         # Blueprint for new clients (copied by /onboard-client)
+│   └── <client-slug>/
+│       ├── brief.md
+│       ├── README.md
 │       └── projects/
-│           └── your-project/     ← specs, QA, deliverables
-│
-├── patterns/                     ← reusable patterns (ADR, design system, etc.)
-├── templates/                    ← document templates (brief, spec, sprint plan)
-├── docs/                         ← SOPs, workflows, onboarding
-├── CLAUDE.md                     ← harness operating model (loaded automatically)
-└── AGENTS.md                     ← team roster and governance matrix
-
-$SOURCE_ROOT_BASE/                ← source code lives HERE, not in the harness
-├── your-project/                 ← actual project repo
-└── another-project/
+│           └── <project-slug>/
+│               ├── specs/         # ADRs, PM summaries, architecture docs
+│               ├── sprints/       # sprint-NNN.md + CURRENT symlink (per-project)
+│               ├── design/        # Design briefs and assets
+│               ├── deliverables/  # Client-facing outputs
+│               └── qa/            # QA reports, test plans
+├── patterns/              # Reusable cross-project patterns (architecture, security, design)
+├── templates/             # adr.md, client-brief.md, design-brief.md, project-spec.md, sprint-plan.md
+├── docs/                  # SOPs, workflows, onboarding
+├── scripts/
+│   ├── setup.sh                 # Interactive first-time configuration
+│   └── sync-to-public.sh        # Sync generic improvements from a private fork to this repo
+├── CLAUDE.md              # Harness operating model — loaded automatically by Claude Code
+├── AGENTS.md              # Team roster, authorities, gates, governance matrix
+└── README.md
 ```
 
-The harness and source code are **always separate**. The harness holds intent (specs, briefs, deliverables). The project repo holds implementation.
-
----
-
-## The Team
-
-Three councils, all directed by the Product Manager.
-
-```
-                        ┌─────────────────┐
-                        │  Product Manager │  ← organizational lead
-                        │  (orchestrator)  │
-                        └────────┬────────┘
-                                 │
-           ┌─────────────────────┼─────────────────────┐
-           ▼                     ▼                     ▼
-   ┌───────────────┐    ┌────────────────┐    ┌────────────────┐
-   │   Creative    │    │   Technical    │    │   Delivery     │
-   │   Council     │    │   Council      │    │   Council      │
-   ├───────────────┤    ├────────────────┤    ├────────────────┤
-   │ Creative Dir  │    │ Solution Arch  │    │ Account Lead   │
-   │ Innovation    │    │ Frontend Dev   │    │ Tech Writer    │
-   │ UX Researcher │    │ Backend Dev    │    │ QA Specialist  │
-   │ UI Designer   │    │ Apple Eng      │    │ GitHub/VC Spec │
-   │               │    │ LLM Engineer   │    │                │
-   │               │    │ Blockchain Eng │    │                │
-   │               │    │ Security Rev   │    │                │
-   └───────────────┘    └────────────────┘    └────────────────┘
-```
-
-Invoke any agent via `Agent tool` with `subagent_type` matching the role name (e.g. `solution-architect`, `qa-specialist`). The PM does this automatically when you use `/pm`.
-
----
-
-## Workflow Pipeline
-
-Every piece of work follows this path. The PM drives it automatically — you don't manually advance stages.
-
-```
-  Client Need
-       │
-       ▼
-  ┌──────────────────────────────────────────────┐
-  │  GATE 1: Account Lead signs brief            │  ← no work starts without this
-  └──────────────────┬───────────────────────────┘
-                     │
-                     ▼
-  ┌──────────────────────────────────────────────┐
-  │  PM: Epic breakdown + delegation plan        │
-  └──────────────────┬───────────────────────────┘
-                     │
-                     ▼
-  ┌──────────────────────────────────────────────┐
-  │  Creative Council                            │
-  │  Innovation Lead → UX Researcher → UI Design │
-  │                                              │
-  │  GATE 2: UX validation before handoff        │  ← blocking
-  │  GATE 3: Creative Director approves design   │  ← blocking
-  └──────────────────┬───────────────────────────┘
-                     │
-                     ▼
-  ┌──────────────────────────────────────────────┐
-  │  Technical Council                           │
-  │  Solution Architect → Developers             │
-  │                                              │
-  │  GATE 4: Architecture sign-off               │  ← blocking
-  └──────────────────┬───────────────────────────┘
-                     │
-                     ▼
-  ┌──────────────────────────────────────────────┐
-  │  Delivery Council                            │
-  │  Tech Writer → QA → Security → GitHub/VC    │
-  │                                              │
-  │  GATE 5: QA approval                        │  ← blocking
-  │  GATE 6: Security sign-off                  │  ← blocking
-  └──────────────────┬───────────────────────────┘
-                     │
-                     ▼
-                   Ship
-```
-
-Gates are **stop-the-line**. If QA blocks, nothing ships. If Security blocks, nothing goes live.
-
----
-
-## Session Context Locking
-
-The harness uses per-session locks to scope every prompt to the right client and project. Without a lock, you're working in global context. With a lock, every agent invocation, every file path, and every spec output automatically targets the correct workspace.
-
-```
-  /use-client acme-corp storefront
-        │
-        ▼
-  .claude/sessions/<session-id>.client  ← "acme-corp/storefront"
-        │
-        ▼
-  inject-active-client.sh fires on EVERY prompt
-        │
-        ├── Harness workspace → clients/acme-corp/projects/storefront/
-        └── Source root       → $SOURCE_ROOT_BASE/storefront/
-```
-
-Locks are **session-isolated** — multiple terminal sessions can target different clients simultaneously.
-
-```
-  Terminal A: /use-client acme-corp storefront  →  works on storefront
-  Terminal B: /use-client widgets-inc api       →  works on api
-  (no cross-contamination)
-```
-
----
-
-## Claude Code Architecture
-
-The harness is built on four Claude Code primitives that work together. Understanding how they connect explains why the harness behaves the way it does.
-
-```
-  User opens Claude Code
-         │
-         ▼
-  ┌─────────────────────────────────────────────────────┐
-  │  CLAUDE.md loads automatically                      │
-  │  → operating model, team structure, governance      │
-  │  → Claude reads this before every session           │
-  └──────────────────────────┬──────────────────────────┘
-                             │
-         User types a prompt │
-                             ▼
-  ┌─────────────────────────────────────────────────────┐
-  │  Hooks fire (UserPromptSubmit event)                │
-  │  → inject-active-client.sh reads session lock       │
-  │  → injects client/project context into the prompt  │
-  │  → pm-status.sh injects PM routing if mode is on   │
-  └──────────────────────────┬──────────────────────────┘
-                             │
-         ┌───────────────────┴──────────────────────┐
-         │ plain prompt                              │ /command
-         ▼                                           ▼
-  ┌──────────────────┐                  ┌────────────────────────┐
-  │  Claude responds │                  │  Command file executes │
-  │  with context    │                  │  .claude/commands/*.md │
-  │  already injected│                  │  → full prompt expands │
-  └──────────────────┘                  └────────────┬───────────┘
-                                                     │
-                                                     ▼
-                                        ┌────────────────────────┐
-                                        │  Agent(s) spawned      │
-                                        │  .claude/agents/*.md   │
-                                        │  → persona + rules     │
-                                        │  → tools + model       │
-                                        │  → reads CLAUDE.md ctx │
-                                        └────────────────────────┘
-```
-
-### CLAUDE.md — The Brain
-
-`CLAUDE.md` is loaded automatically by Claude Code at the start of every session. It is the harness operating model: team structure, governance rules, workflow gates, multi-client conventions, and the search-first protocol. Every agent and command runs with this context already loaded — you never have to re-explain the rules.
-
-```
-CLAUDE.md
-├── Organization identity ({{STUDIO_NAME}})
-├── Core philosophy (5 principles)
-├── Team structure (three councils + roles)
-├── Automated workflow pipeline
-├── Non-negotiable gates (stop-the-line)
-├── Multi-client governance rules
-├── Search-first protocol
-└── Active clients table
-```
-
-### Agents — Specialized Subagents
-
-Files in `.claude/agents/` define the 17 specialized roles. Each file is a subagent definition that Claude Code can spawn via the `Agent` tool with `subagent_type` set to the agent's name.
-
-```
-.claude/agents/solution-architect.md
-├── name: solution-architect
-├── description: when to spawn this agent (used by PM to route)
-├── tools: Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch
-├── model: sonnet
-└── body: persona, non-negotiable rules, standards, gate conditions
-```
-
-When the PM receives a task, it reads the `description` field of each agent to decide which ones to spawn and in what order. Agents run in full isolation — they read `CLAUDE.md` for context but don't share memory with each other.
-
-**Blocking vs non-blocking agents:**
-
-| Type | Examples | Behavior |
-|---|---|---|
-| Blocking gate | Solution Architect, QA Specialist, Security Reviewer | Work halts until they approve |
-| Non-blocking | Frontend Dev, Backend Dev, UI Designer | Run in parallel, hand off output |
-| Always independent | QA, Security, Creative Director | Never self-review — always spawned fresh |
-
-### Commands — Slash Command Handlers
-
-Files in `.claude/commands/` define slash commands. When you type `/pm build the checkout flow`, Claude Code reads `.claude/commands/pm.md`, substitutes `$ARGUMENTS` with `build the checkout flow`, and executes the resulting prompt.
-
-```
-/pm build the checkout flow
-      │
-      ▼
-.claude/commands/pm.md  (with $ARGUMENTS = "build the checkout flow")
-      │
-      ▼
-Spawns product-manager agent with full delegation instructions
-      │
-      ├── Spawns solution-architect (parallel)
-      ├── Spawns ux-researcher (parallel)
-      └── Waits for gates, advances pipeline
-```
-
-Commands are plain markdown files — no code. The entire command logic is a structured natural language prompt that tells Claude exactly what to do, in what order, and when to stop.
-
-### Hooks — Automatic Context Injection
-
-Files in `.claude/hooks/` are shell scripts wired to Claude Code events in `.claude/settings.json`. They run automatically — the user never invokes them.
-
-```json
-// .claude/settings.json
-{
-  "hooks": {
-    "UserPromptSubmit": [
-      { "command": "bash .claude/hooks/inject-active-client.sh" },
-      { "command": "bash .claude/hooks/pm-status.sh" }
-    ]
-  }
-}
-```
-
-**`inject-active-client.sh`** — On every prompt, reads `.claude/sessions/<session-id>.client` and injects a `<system-prompt-injection>` block telling Claude:
-- Which client and project are active
-- Where the harness workspace is (`clients/<client>/<project>/`)
-- Where source code lives (`$SOURCE_ROOT_BASE/<project>/`)
-- Never to cross client boundaries
-
-**`pm-status.sh`** — If PM mode is on (`.claude/sessions/<session-id>.pm-mode` = `on`), injects PM routing instructions so every prompt is automatically delegated without needing `/pm`.
-
-Hooks are also how `SESSION_ID` flows into every prompt — the inject script reads it from the JSON payload and re-injects it so commands like `/use-client` and `/pm on` can write the right session file.
-
-### Settings — Wiring and Permissions
-
-`.claude/settings.json` does two things:
-
-**1. Wires hooks to events** (shown above)
-
-**2. Sets tool permissions** — what agents are allowed to do without prompting the user:
-
-```json
-{
-  "permissions": {
-    "allow": [
-      "Bash(git:*)",        // git operations always allowed
-      "Read(**)",           // read any file
-      "Write(clients/**)",  // write inside client workspaces
-      "Write(.claude/sessions/*)"  // session state
-    ],
-    "deny": [
-      "Bash(rm -rf *)",     // no destructive shell ops
-      "Write(.env)"         // never overwrite secrets
-    ]
-  }
-}
-```
-
-### How It All Connects
-
-A full `/pm` invocation flows through all four primitives:
-
-```
-1. User types: /pm build the checkout flow
-
-2. Hook fires → inject-active-client.sh injects:
-   CLIENT=acme-corp, PROJECT=storefront,
-   WORKSPACE=clients/acme-corp/projects/storefront/,
-   SOURCE_ROOT=$SOURCE_ROOT_BASE/storefront/
-
-3. Command executes → .claude/commands/pm.md expands with
-   $ARGUMENTS = "build the checkout flow"
-   → Instructions: assess scope, load context, build delegation plan
-
-4. PM agent spawns (product-manager.md):
-   → Reads CLAUDE.md: knows the gates, councils, governance
-   → Reads client workspace: loads existing specs, ADRs
-   → Spawns solution-architect + ux-researcher in parallel
-   → Waits for arch sign-off (gate)
-   → Spawns frontend-developer + backend-developer
-   → Spawns qa-specialist (blocking gate)
-   → Spawns security-reviewer (blocking gate)
-   → Writes PM summary to clients/acme-corp/projects/storefront/specs/
-
-5. Result surfaces to user: summary of what was built, what gates passed
-```
-
----
-
-## Slash Commands
-
-| Command | What it does |
-|---|---|
-| `/use-client <slug>` | Lock session to client or project |
-| `/pm <task>` | Invoke PM to orchestrate work end-to-end |
-| `/pm on` / `/pm off` | Enable persistent PM mode (auto-routes all prompts) |
-| `/intake` | Run intake for a new piece of work |
-| `/kickoff` | Run full project kickoff (PM leads discovery) |
-| `/sprint-plan` | Plan a sprint |
-| `/arch-review` | Architecture review with Solution Architect gate |
-| `/design-review` | Design review with Creative Director + UX gates |
-| `/ideate` | Structured ideation session |
-| `/client-report` | Generate client status report |
-| `/retro` | Run sprint/project retrospective |
-| `/onboard-client` | Onboard a new client (creates workspace) |
-
----
-
-## Hooks
-
-Two hooks run automatically on every prompt:
-
-**`inject-active-client.sh`** — Reads the session lock file and injects client/project context into every prompt. Agents automatically know which workspace and source root to use.
-
-**`pm-status.sh`** — When PM mode is on, injects PM routing instructions so all work is automatically delegated without needing to invoke `/pm` explicitly.
-
-These hooks are what make the session locking "sticky" — you set it once per session, and it follows every subsequent message.
-
----
-
-## Multi-Client Governance
-
-```
-clients/
-├── _template/                  ← copy this to onboard new client
-├── <client-slug>/
-│   ├── README.md               ← client overview
-│   ├── brief.md                ← signed client brief (Account Lead owns)
-│   ├── requirements.md
-│   └── projects/
-│       └── <project-slug>/
-│           ├── specs/          ← ADRs, PM summaries, architecture docs
-│           ├── design/         ← design assets and briefs
-│           ├── deliverables/   ← client-facing outputs
-│           └── qa/             ← test plans, QA reports
-```
-
-Rules:
-- Client data **never crosses boundaries** — `acme-corp/storefront` content never appears in `widgets-inc`
-- Source code lives in `$SOURCE_ROOT_BASE/<project-slug>/` — **never** inside the harness
-- Shared reusable work goes in `patterns/` only
-- All architectural decisions → ADR in `specs/`
-
----
-
-## Search-First Protocol
-
-Agents have no persistent memory across sessions. Every session starts cold. The search-first protocol is how agents avoid re-doing, re-litigating, or contradicting work that already happened.
-
-Before building anything:
-
-```
-1. patterns/                                        ← reusable cross-project patterns
-2. clients/<client>/projects/<project>/specs/       ← this project's decisions and history
-3. templates/                                       ← document scaffolding
-4. Solution Architect sign-off                      ← validate before building net-new
-```
-
-### What lives in `specs/`
-
-`clients/<client>/projects/<project>/specs/` is the project's written memory:
-
-```
-specs/
-├── adr-001-system-architecture.md     ← Architecture Decision Records
-├── adr-002-database-choice.md         ← one ADR per significant decision
-├── pm-summary-sprint-1.md             ← PM writes this after every major task
-├── pm-summary-checkout-feature.md     ← what shipped, what gates passed
-├── arch-review.md                     ← Solution Architect sign-off record
-├── innovation-brief-payment-ux.md     ← Innovation Lead output
-└── security-review.md                 ← Security Reviewer findings
-```
-
-**ADRs (Architecture Decision Records)** capture what was decided, why, what alternatives were rejected, and what the consequences are. Once written, they are binding. An agent proposing something that contradicts an ADR must justify the change — it cannot simply ignore it.
-
-**PM summaries** are written by the PM after completing substantive work. They record what was built, which agents ran, what gates were hit, and what the outcome was. A new session reads these to understand project state without needing to re-derive it from code.
-
-Why this matters: an agent asked to add a Redis cache might propose it confidently — until it reads `adr-003-no-external-cache.md` and learns it was ruled out three sprints ago for a specific reason. Without that read, it would propose rejected work. With it, it builds on settled decisions instead of reopening them.
+Source code lives **outside** the harness, in `$SOURCE_ROOT_BASE/<project-slug>/` (configured in `.env`). The harness holds intent — briefs, specs, ADRs, deliverables. The project repo holds implementation.
 
 ---
 
 ## Getting Started
 
-### First time setup
-
 ```bash
+# 1. Clone
+git clone https://github.com/10Legs/freelance-developer-harness.git
+cd freelance-developer-harness
+
+# 2. Configure
+cp .env.template .env
+$EDITOR .env             # set STUDIO_NAME, SOURCE_ROOT_BASE, GITHUB_USERNAME, etc.
+
+# 3. Run setup — patches CLAUDE.md with your studio identity
 bash scripts/setup.sh
-# interactive wizard — configures .env and patches CLAUDE.md
-```
 
-### Start working on a project
-
-```bash
-# in Claude Code, lock to your project
-/use-client acme-corp storefront
-
-# now all agents and file paths auto-scope to that project
-# source code edits go to $SOURCE_ROOT_BASE/storefront/
-# specs and docs go to clients/acme-corp/projects/storefront/
-```
-
-### Kick off new work
-
-```bash
-# let the PM orchestrate everything
-/pm build the checkout flow for storefront
-
-# or run structured intake
-/intake
-```
-
-### Enable persistent PM routing
-
-```bash
-/pm on
-# every subsequent prompt is automatically PM-routed
-# PM delegates to the right agents without you having to invoke /pm each time
-```
-
-### Onboard a new client
-
-```bash
+# 4. Open in Claude Code, then onboard your first client
 /onboard-client acme-corp
-# creates clients/acme-corp/ from template
-# Account Lead runs brief intake
-# workspace is ready for work
+
+# 5. Lock the session and start working
+/use-client acme-corp storefront
+/pm build the checkout flow
 ```
 
 ---
 
-## Effective Usage
+## Key Commands
 
-**Lock your session first.** Without `/use-client`, agents guess context. With it, everything is automatic.
-
-**Use `/pm` for anything non-trivial.** Single-file edits you can do directly. A new feature, a sprint, an architecture change — route through PM so gates get hit.
-
-**Let gates block you.** When QA or Security blocks, that's the system working correctly. Fix the blocker, don't route around it.
-
-**Write ADRs for architecture decisions.** Memory is unreliable. The ADR template is in `templates/adr.md`. Solution Architect writes them during arch review.
-
-**Check `patterns/` before building.** The patterns library exists to prevent re-inventing the wheel across client projects.
-
----
-
-## Active Clients
-
-| Client | Project | Status |
-|---|---|---|
-| your-client | your-project — brief description | Active |
-| example-client | storefront — example populated workspace | Example |
+| Command | What it does |
+|---------|--------------|
+| `/use-client <slug> <project>` | Lock the session to a client + project (session-scoped, isolated) |
+| `/onboard-client <slug>` | Create a new client workspace from the template |
+| `/pm <task>` | Run the PM end-to-end on a task; spawns the right agents and walks the gates |
+| `/pm on` / `/pm off` | Toggle persistent PM mode — every subsequent prompt is auto-routed |
+| `/mode` | Toggle permission mode (default / acceptEdits / plan / bypass) for the active session |
+| `/intake` | Structured intake for a new piece of work — PM produces a delegation plan |
+| `/kickoff` | Full project kickoff: discovery, scope, initial backlog |
+| `/sprint-plan` | Plan the next sprint into `clients/.../sprints/sprint-NNN.md` and repoint `CURRENT` |
+| `/retro` | Close the active sprint: stamp closed_date, write retro into the sprint file |
+| `/arch-review` | Architecture review with Solution Architect as gate |
+| `/design-review` | Design review with Creative Director + UX gates |
+| `/ideate` | Structured ideation session led by Innovation Lead |
+| `/client-report` | Generate a client status report |
 
 ---
 
-## Key Files
+## Workflow Gates
 
-| File | Purpose |
-|---|---|
-| `CLAUDE.md` | Complete operating model — loaded automatically by Claude Code |
-| `AGENTS.md` | Full team roster, authorities, gates, governance matrix |
-| `docs/onboarding.md` | Team setup and philosophy |
-| `patterns/` | Reusable architecture and design patterns |
-| `templates/` | ADR, brief, spec, sprint plan templates |
-| `docs/workflows/` | Detailed workflow docs per stage |
-| `docs/sops/` | Standard operating procedures |
+Six **non-negotiable stop-the-line gates** keep work honest. If any gate blocks, the pipeline stops — no working around them.
+
+1. **No client work starts without a signed brief.** Account Lead owns this.
+2. **No work is scoped or delegated without PM approval.** PM owns prioritization and routing.
+3. **No implementation without architecture sign-off.** Solution Architect reviews every system design.
+4. **No design handoff without UX validation.** UX Researcher must validate against user research.
+5. **No delivery without QA approval.** QA Specialist owns the final quality gate.
+6. **No public-facing work without Security review.** Security Reviewer signs off on every release.
+
+For hardware projects, the NPI pipeline adds: **DFM feasibility**, **EVT pass**, **DVT pass + BOM lock**, **Certification clearance**, and **PVT yield target**.
+
+Collapsible roles: for tiny engagements, Account Lead can collapse into PM, and Technical Writer can collapse into developer roles.
+
+---
+
+## Sprint Tracking
+
+Each project owns its own sprint history under `clients/<client>/projects/<project>/sprints/`. Sprints are sequentially numbered and never cross project boundaries.
+
+```mermaid
+gitGraph
+    commit id: "main"
+    branch feat/sprint-007
+    commit id: "sprint-007.md (active)"
+    commit id: "milestone 1 PR"
+    commit id: "milestone 2 PR"
+    checkout main
+    merge feat/sprint-007 tag: "sprint-007 closed"
+    branch feat/sprint-008
+    commit id: "sprint-008.md (active)"
+```
+
+Convention:
+
+```
+clients/<client>/projects/<project>/sprints/
+  sprint-001.md
+  sprint-002.md
+  ...
+  CURRENT -> sprint-NNN.md     # symlink to the active sprint
+```
+
+- `/sprint-plan` auto-detects the next number, creates `sprint-NNN.md` from the template, and repoints `CURRENT`.
+- `/retro` reads `CURRENT`, stamps `status: closed` and `closed_date`, and writes the retrospective into the same sprint file (no separate retro doc).
+- The sprint file contains frontmatter (status, dates, goal), a milestone table, the backlog with PR links, risks, definition of done, and an embedded retrospective section.
+
+This is the only source of sprint truth. Specs, ADRs, and PM summaries continue to live in `specs/`.
+
+---
+
+## Syncing with `molt-and-deploy-harness`
+
+This public repo is downstream of an internal private harness called `molt-and-deploy-harness`. Generic improvements (new agents, commands, patterns) are pushed downstream with `scripts/sync-to-public.sh`, which scrubs PII and refuses to copy client-specific material.
+
+```bash
+# Dry run first — shows what would change, makes no edits
+scripts/sync-to-public.sh \
+  --source /path/to/molt-and-deploy-harness \
+  --target /path/to/freelance-developer-harness \
+  --dry-run
+
+# Real sync — creates branch sync/from-molt-<date> in TARGET and stages a PR
+scripts/sync-to-public.sh \
+  --source /path/to/molt-and-deploy-harness \
+  --target /path/to/freelance-developer-harness
+```
+
+Hard rules enforced by the script:
+
+- `SOURCE` is never modified
+- `TARGET` writes happen on a fresh branch (`sync/from-molt-<date>`)
+- Blocklist beats allowlist — client-specific paths (`clients/<real-client>/`, session files, secrets) are never copied even if matched by an allowlist rule
+- A `sed` scrubber replaces hardcoded paths with `$SOURCE_ROOT_BASE/` placeholders
+- The `Active Clients` table in `CLAUDE.md` is reset to the single template row
+- A PII guard runs in CI on every PR — if PII slips through, the PR fails
+
+Exit codes: `0` success · `1` usage error · `2` PII detected post-scrub · `3` source/target invalid.
+
+You can run this script independently; you do not need access to the private repo to use the public harness.
+
+---
+
+## Contributing
+
+Issues, ideas, and pull requests are welcome.
+
+- **Discussions before code.** For new agents, councils, or workflow changes, open a Discussion or Issue first so the design can be debated before implementation.
+- **Follow the harness rules.** Branch for every change. Never commit to `main` directly. PRs require a clean CI check (including PII guard).
+- **Respect the agent boundary.** Agent definitions are intentional personas with hard rules — propose changes in an Issue rather than rewriting them silently.
+- **No client data.** The public repo holds template and demo material only. Real client briefs, source paths, and credentials never appear here.
+- **License.** MIT — see [LICENSE](LICENSE).
+
+---
+
+*Built for [Claude Code](https://claude.com/claude-code) by [10Legs](https://github.com/10Legs).*
