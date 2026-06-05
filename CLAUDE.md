@@ -129,6 +129,30 @@ For hybrid products, these contracts apply:
 - Shared patterns live in `patterns/` — never client-specific code
 - All client deliverables are documented under `clients/{{CLIENT_SLUG}}/projects/{{PROJECT_SLUG}}/deliverables/`
 
+### Sprint Tracking (per-project)
+
+Sprint history is tracked **per project only** — never across projects, never
+at the client level.
+
+```
+clients/{{CLIENT_SLUG}}/projects/{{PROJECT_SLUG}}/sprints/
+  sprint-001.md
+  sprint-002.md
+  ...
+  CURRENT -> sprint-NNN.md      (symlink to the active sprint)
+```
+
+Rules:
+- Each project owns its `sprints/` directory; sprints are sequentially numbered
+  (`sprint-NNN.md`, zero-padded to 3 digits)
+- `CURRENT` is always a symlink to the active sprint file (never a regular file)
+- `/sprint-plan` auto-detects the next number, writes the new file into
+  `sprints/`, and repoints `CURRENT`
+- `/retro` reads `CURRENT`, stamps `closed_date`, sets `status: closed`, and
+  writes retrospective notes into the same sprint file (no separate retro file)
+- Sprint files never live in `specs/` — that is reserved for ADRs, PM summaries,
+  and architecture docs
+
 ## Search-First Protocol
 
 Before any implementation:
