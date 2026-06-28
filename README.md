@@ -14,7 +14,7 @@ A structured agency operating system for [Claude Code](https://claude.com/claude
 
 The harness is the missing org chart for AI coding agents. Out of the box, Claude Code is a brilliant generalist. Useful, but unprincipled — it will happily skip architecture review to ship faster, or run security checks last instead of first. That is not how a real agency works.
 
-This harness installs the missing structure. A **Product Manager** owns the roadmap and routes every request through the right specialists. Three **councils** — Creative, Technical, Hardware, and Delivery — each have defined responsibilities and gates. Work flows through an automated pipeline from intake through delivery, and **non-negotiable stop-the-line gates** prevent rushing past steps that matter.
+This harness installs the missing structure. A **Product Manager** owns the roadmap and routes every request through the right specialists. Four **councils** — Creative, Technical, Hardware, and Delivery — each have defined responsibilities and gates. Work flows through an automated pipeline from intake through delivery, and **non-negotiable stop-the-line gates** prevent rushing past steps that matter.
 
 It is for solo developers running multiple client engagements, small studios that want repeatable process without hiring a PMO, and anyone building hardware-plus-software products who needs the NPI discipline of a real product company. It is not a code framework — there is no library to import. It is a set of markdown files (agents, commands, hooks, templates) that Claude Code loads automatically, plus per-client workspaces that keep every engagement cleanly isolated.
 
@@ -47,7 +47,7 @@ flowchart LR
     style G fill:#A7F3D0,stroke:#047857,color:#000
 ```
 
-**Three councils, one PM.** The PM never implements — it directs. Specialists do the work. Gates block the pipeline until quality criteria are met.
+**Four councils, one PM.** The PM never implements — it directs. Specialists do the work. Gates block the pipeline until quality criteria are met.
 
 **Session-scoped client locking.** `/use-client <slug> <project>` locks a Claude Code session to one workspace. Every prompt thereafter auto-scopes to the right client, the right project, the right source root. Multiple sessions can target different clients with zero cross-contamination.
 
@@ -194,6 +194,34 @@ bash scripts/setup.sh
 
 ---
 
+## Using It Day-to-Day
+
+A normal working session: lock the workspace once, hand the PM a task, let the gates run. When context gets noisy or you want a clean slate, snapshot it and reset.
+
+```mermaid
+sequenceDiagram
+    actor You
+    participant CC as Claude Code
+    participant PM as Product Manager
+    participant Councils as Councils + Gates
+
+    You->>CC: /use-client acme storefront
+    Note over CC: Session locked — every prompt<br/>auto-scopes to this workspace
+    You->>PM: /pm build the checkout flow
+    PM->>Councils: break into epics, route, hold at gates
+    Councils-->>PM: gated sign-offs (arch, UX, QA, security)
+    PM-->>You: shipped + documented
+
+    Note over You,CC: context noisy, or starting fresh tomorrow?
+    You->>CC: /handoff-session
+    CC-->>You: dense, paste-ready handoff prompt
+    Note over You,CC: paste into a NEW session →<br/>continue with clean context, zero drift
+```
+
+The loop is: **lock → direct → ship → hand off**. The handoff step is what keeps long-running engagements from accumulating stale or hallucinated context — instead of `/compact`, you carry forward only a verified snapshot.
+
+---
+
 ## Key Commands
 
 | Command | What it does |
@@ -211,12 +239,28 @@ bash scripts/setup.sh
 | `/design-review` | Design review with Creative Director + UX gates |
 | `/ideate` | Structured ideation session led by Innovation Lead |
 | `/client-report` | Generate a client status report |
+| `/handoff-session` | Snapshot the session into a paste-ready handoff prompt (auto-copied to clipboard) for a clean context reset |
 
 ---
 
 ## Workflow Gates
 
 Six **non-negotiable stop-the-line gates** keep work honest. If any gate blocks, the pipeline stops — no working around them.
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    [*] --> Intake
+    Intake --> Scoped: Brief signed (Account Lead)
+    Scoped --> Architected: Scope approved (PM)
+    Architected --> Designed: Architecture signed off (Solution Architect)
+    Designed --> Built: Design validated (UX Researcher)
+    Built --> Verified: QA approved (QA Specialist)
+    Verified --> Shipped: Security signs off (Security Reviewer)
+    Shipped --> [*]
+```
+
+Each transition is a gate: work cannot advance to the next state until the named role signs off. A blocked gate halts the whole pipeline — the PM surfaces the blocker and routes around it or escalates.
 
 1. **No client work starts without a signed brief.** Account Lead owns this.
 2. **No work is scoped or delegated without PM approval.** PM owns prioritization and routing.
