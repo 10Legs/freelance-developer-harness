@@ -53,6 +53,8 @@ flowchart LR
 
 **Hooks inject context automatically.** On every prompt, hooks read your session lock and inject the active client, project, and source-root paths into the agent's context. You set the lock once per session and it follows every subsequent message.
 
+**The client boundary is enforced, not just documented.** A `PreToolUse` guard checks every `Write`, `Edit`, and `NotebookEdit` against your session lock and *blocks* any write that lands in another client's workspace — including paths that try to reach one via `../`. Isolation is a mechanism here, not a rule the agent is asked to remember. Sessions with no lock set are unrestricted, so run `/use-client` before touching client work.
+
 ---
 
 ## Team Roster
@@ -130,7 +132,7 @@ flowchart TB
 | Certification Specialist | Hardware | FCC, CE, UL, RoHS, REACH, WEEE |
 | Technical Writer | Delivery | Documentation, client deliverables, knowledge base |
 | QA Specialist | Delivery | Quality gates, acceptance criteria, test automation |
-| GitHub & VC Specialist | Delivery | Branch hygiene, PR review, release readiness |
+| GitHub & VC Specialist | Delivery | Branch hygiene, PR health, release readiness (advisory — never opens or merges) |
 
 ---
 
@@ -141,7 +143,7 @@ freelance-developer-harness/
 ├── .claude/
 │   ├── agents/            # 25 role definitions — each agent is a markdown persona
 │   ├── commands/          # Slash commands (/pm, /intake, /sprint-plan, /retro, /mode, …)
-│   ├── hooks/             # Auto-inject session context on every prompt
+│   ├── hooks/             # Session-context injection + client boundary guard
 │   ├── sessions/          # Per-session client locks (one file per session)
 │   └── settings.json      # Hook wiring + tool permissions
 ├── clients/
@@ -158,10 +160,10 @@ freelance-developer-harness/
 │               └── qa/            # QA reports, test plans
 ├── patterns/              # Reusable cross-project patterns (architecture, security, design)
 ├── templates/             # adr.md, client-brief.md, design-brief.md, project-spec.md, sprint-plan.md
-├── docs/                  # SOPs, workflows, onboarding
+├── docs/                  # SOPs, workflows, onboarding, refit records
 ├── scripts/
 │   ├── setup.sh                 # Interactive first-time configuration
-├── CLAUDE.md              # Harness operating model — loaded automatically by Claude Code
+├── CLAUDE.md              # Routing table, gates, and traps — loaded automatically by Claude Code
 ├── AGENTS.md              # Team roster, authorities, gates, governance matrix
 └── README.md
 ```
@@ -272,6 +274,8 @@ Each transition is a gate: work cannot advance to the next state until the named
 For hardware projects, the NPI pipeline adds: **DFM feasibility**, **EVT pass**, **DVT pass + BOM lock**, **Certification clearance**, and **PVT yield target**.
 
 Collapsible roles: for tiny engagements, Account Lead can collapse into PM, and Technical Writer can collapse into developer roles.
+
+**Version control ownership.** Developers open their own PRs. The GitHub & VC Specialist advises on branch naming, commit hygiene, and PR timing, and raises blocking flags for stale branches or unreviewed PRs — it never opens or merges. **Merging is always a human decision**, and no agent commits directly to `main`.
 
 ---
 
