@@ -4,7 +4,7 @@
 #   <client-slug>              → client-only lock
 #   <client-slug>/<project>   → client + project lock
 #
-# Falls back to .claude/active-client for backwards compatibility.
+# No lock = no active client. There is no legacy fallback path.
 
 HARNESS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 SESSIONS_DIR="$HARNESS_DIR/.claude/sessions"

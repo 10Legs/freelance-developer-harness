@@ -44,7 +44,7 @@ Execute the full automated workflow:
 
 1. **Assess the request** — Is this intake (new project), a sprint (ongoing work), or a targeted delegation (specific epic/feature)?
 
-2. **Load context** — Read the active client lock at `.claude/active-client` if present. Use it to locate the correct workspace at `clients/{{CLIENT_SLUG}}/projects/{{PROJECT_SLUG}}/`. If no lock is set, infer from the request or ask once before proceeding.
+2. **Load context** — Read the active client lock at `.claude/sessions/<SESSION_ID>.client` if present (contents: `<client>` or `<client>/<project>`). Use it to locate the correct workspace under `clients/<client>/projects/<project>/`. If no lock is set, ask once and run `/use-client` before proceeding — without a lock the client boundary guard is inactive.
 
 3. **Produce a delegation plan** — Break the work into epics, assign each to the correct council and agent, map dependencies, and identify the critical path.
 
