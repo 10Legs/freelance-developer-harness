@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Built for Claude Code](https://img.shields.io/badge/built%20for-Claude%20Code-7C3AED)](https://claude.com/claude-code)
 
-A structured agency operating system for [Claude Code](https://claude.com/claude-code). Turns one assistant into a full team — Product Manager, three councils of specialists, and enforced quality gates — that runs your client work end-to-end.
+A structured agency operating system for [Claude Code](https://claude.com/claude-code). Turns one assistant into a full team — Product Manager, four councils of specialists, and enforced quality gates — that runs your client work end-to-end.
 
 ---
 

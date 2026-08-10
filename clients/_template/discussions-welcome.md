@@ -6,10 +6,11 @@ This is the community space for the **Freelance Developer Harness**, a project f
 
 The Freelance Developer Harness is a multi-agent operating system for [Claude Code](https://claude.com/claude-code) that lets a solo developer (or small team) operate like a full creative and technical agency.
 
-Work flows through a **Product Manager** who directs three councils:
+Work flows through a **Product Manager** who directs four councils:
 
 - **Creative Council**: Creative Director, Innovation Lead, UX Researcher, UI Designer
 - **Technical Council**: Solution Architect, Frontend, Backend, Apple Platform, LLM, Blockchain, Security Reviewer
+- **Hardware Council**: Hardware PM, Industrial Design, Electrical, Firmware, Mechanical, Hardware Security, Manufacturing, Supply Chain, Certification
 - **Delivery Council**: Tech Writer, QA, GitHub & Version Control Specialist
 
 Every engagement moves through the same pipeline:

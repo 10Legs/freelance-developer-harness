@@ -1,7 +1,7 @@
 # Workflow: Discovery Phase
 
 ## Purpose
-Transform a client brief into validated, actionable project foundations across all three councils.
+Transform a client brief into validated, actionable project foundations across all four councils.
 
 ## Duration
 Typically 1-3 weeks depending on project scope.

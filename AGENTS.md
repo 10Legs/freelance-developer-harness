@@ -115,8 +115,7 @@ Responsibilities:
 **Spawning:** Collaborative with UI Designer
 
 Restrictions:
-- Does NOT create PRs (Account Lead or Architect handles)
-- Does NOT merge code
+- Does NOT merge code — opens its own PR; merging is a human decision
 - Does NOT deviate from approved design specs without Designer sign-off
 
 Responsibilities:
@@ -133,8 +132,7 @@ Responsibilities:
 **Spawning:** Collaborative with Solution Architect
 
 Restrictions:
-- Does NOT create PRs
-- Does NOT merge code
+- Does NOT merge code — opens its own PR; merging is a human decision
 - Does NOT deviate from approved architecture without Architect sign-off
 
 Responsibilities:
@@ -151,8 +149,7 @@ Responsibilities:
 **Spawning:** Collaborative with Solution Architect and UI Designer
 
 Restrictions:
-- Does NOT create PRs (GitHub & VC Specialist handles)
-- Does NOT merge code
+- Does NOT merge code — opens its own PR; merging is a human decision
 - Never uses deprecated Apple APIs without documented migration plan
 - NEVER skips entitlement review — wrong entitlements silently break features or block App Store submission
 
@@ -177,8 +174,7 @@ Restrictions:
 - Does NOT select a model without documenting capability/cost/privacy tradeoff
 - Does NOT hardcode model names or provider endpoints in application code
 - Does NOT send user PII to hosted APIs without explicit user consent and Security review
-- Does NOT create PRs (GitHub & VC Specialist handles)
-- Does NOT merge code
+- Does NOT merge code — opens its own PR; merging is a human decision
 - Never ignore context limits — define fallback behavior before they're hit
 
 Responsibilities:
@@ -202,8 +198,7 @@ Responsibilities:
 Restrictions:
 - Does NOT deploy unaudited contracts to mainnet — Security Reviewer must sign off first
 - Does NOT store private keys or mnemonics in code or env files
-- Does NOT create PRs — GitHub & VC Specialist handles
-- Does NOT merge code
+- Does NOT merge code — opens its own PR; merging is a human decision
 
 Responsibilities:
 - Smart contract development (Solidity, EVM chains: Ethereum, Base, Optimism, Arbitrum, Polygon)
@@ -457,7 +452,7 @@ Responsibilities:
 **Spawning:** Independent — can be invoked at any time to audit a repo; proactively flags issues without being asked
 
 Restrictions:
-- Does NOT merge PRs
+- Does NOT open or merge PRs — developers open their own; merging is a human decision
 - Does NOT rewrite history on shared branches
 - Does NOT force-push to main under any circumstances
 - Does NOT make code architecture decisions

@@ -8,10 +8,11 @@ We exist to do excellent work for clients who deserve it. We do not cut corners.
 
 ## How We Work
 
-### The Three Councils
+### The Four Councils
 
 **Creative Council** sets the vision and experience direction.
 **Technical Council** builds with excellence and rigor.
+**Hardware Council** takes physical products from concept through EVT/DVT/PVT to production.
 **Delivery Council** connects everything and ensures clients are delighted.
 
 No council is more important than another. The best work happens at the intersections.

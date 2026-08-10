@@ -1,6 +1,6 @@
 # Getting Started
 
-The Freelance Developer Harness is a Claude Code operating system for running a structured agency team across multiple client projects. It gives you 17 specialized roles (architects, designers, developers, QA, security) organized into three councils, enforced quality gates, and an automated PM-driven workflow.
+The Freelance Developer Harness is a Claude Code operating system for running a structured agency team across multiple client projects. It gives you 25 specialized roles (architects, designers, developers, hardware engineers, QA, security) organized into four councils, enforced quality gates, and an automated PM-driven workflow.
 
 ## Quick start
 
